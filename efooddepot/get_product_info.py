@@ -41,6 +41,6 @@ if __name__ == '__main__':
         print(product)
         results.append(product)
     df = pd.DataFrame(results)
-    df.to_csv('results.csv', index=False)
+    df.to_csv('results.csv', index=False, sep=';')
     print('Done')
     exit(0)
