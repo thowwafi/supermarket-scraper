@@ -1,6 +1,6 @@
-import os
-import requests
 from bs4 import BeautifulSoup as bs4
+import requests
+import pandas as pd
 
 
 url = "http://www.efooddepot.com/ethnics/indonesian.html"
@@ -25,13 +25,23 @@ def get_product_info(url):
     soup = bs4(res.content, 'html.parser')
     # name = soup.find('h1', class_="product-name").text
     # price = soup.find('span', class_="price").text
-    # return name, price
+    return {
+        "name": "",
+        "price": "",
+        "image": "",
+        "upc": "",
+        "description": "",
+    }
 
 
 if __name__ == '__main__':
     links = main()
+    results = []
     for link in links:
-        name, price = get_product_info(link)
-        print(name, price)
+        product = get_product_info(link)
+        print(product)
+        results.append(product)
+    df = pd.DataFrame(results)
+    df.to_csv('results.csv')
     print('Done')
     exit(0)
