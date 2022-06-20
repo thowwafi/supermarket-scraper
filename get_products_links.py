@@ -4,9 +4,6 @@ import requests
 import pandas as pd
 
 
-url = "http://www.efooddepot.com/ethnics/indonesian.html"
-
-
 def main(url):
     res = requests.get(url)
     soup = bs4(res.content, 'html.parser')
@@ -37,6 +34,7 @@ def get_product_info(url):
 
 if __name__ == '__main__':
     all_links = []
+    # There are 160 pages in Indonesian products pages
     for i in range(1, 161):
         url = f"http://www.efooddepot.com/products/grid/24/0/0/0/0/25/{i}/all.html"
         print('url', url)
