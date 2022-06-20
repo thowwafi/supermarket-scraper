@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup as bs4
+import json
 import requests
 import pandas as pd
 
@@ -6,7 +7,7 @@ import pandas as pd
 url = "http://www.efooddepot.com/ethnics/indonesian.html"
 
 
-def main():
+def main(url):
     res = requests.get(url)
     soup = bs4(res.content, 'html.parser')
     boxes = soup.find_all('td', class_="fourth")
@@ -35,13 +36,23 @@ def get_product_info(url):
 
 
 if __name__ == '__main__':
-    links = main()
-    results = []
-    for link in links:
-        product = get_product_info(link)
-        print(product)
-        results.append(product)
-    df = pd.DataFrame(results)
-    df.to_csv('results.csv')
+    all_links = []
+    for i in range(1, 161):
+        url = f"http://www.efooddepot.com/products/grid/24/0/0/0/0/25/{i}/all.html"
+        print('url', url)
+        links = main(url)
+        all_links.extend(links)
+    data = {
+        "links": all_links,
+    }
+    with open('links.json', 'w', encoding='utf-8') as fn:
+        json.dump(data, fn, indent=4, ensure_ascii=False)
+    # results = []
+    # for link in all_links:
+    #     product = get_product_info(link)
+    #     print(product)
+    #     results.append(product)
+    # df = pd.DataFrame(results)
+    # df.to_csv('results.csv')
     print('Done')
     exit(0)
