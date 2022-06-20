@@ -40,17 +40,12 @@ if __name__ == '__main__':
         print('url', url)
         links = main(url)
         all_links.extend(links)
+
+    # write results to json file
     data = {
         "links": all_links,
     }
     with open('links.json', 'w', encoding='utf-8') as fn:
         json.dump(data, fn, indent=4, ensure_ascii=False)
-    # results = []
-    # for link in all_links:
-    #     product = get_product_info(link)
-    #     print(product)
-    #     results.append(product)
-    # df = pd.DataFrame(results)
-    # df.to_csv('results.csv')
     print('Done')
     exit(0)

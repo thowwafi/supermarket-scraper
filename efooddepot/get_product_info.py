@@ -32,14 +32,19 @@ def get_product_info(url):
 
 
 if __name__ == '__main__':
+    # read links from json file
     with open('links.json', 'r', encoding='utf-8') as fn:
         data = json.load(fn)
     links = data['links']
+
+    # get product info
     results = []
     for link in links:
         product = get_product_info(link)
         print(product)
         results.append(product)
+
+    # write results to csv
     df = pd.DataFrame(results)
     df.to_csv('results.csv', index=False, sep=';')
     print('Done')
