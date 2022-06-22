@@ -106,12 +106,19 @@ if __name__ == '__main__':
 
     # get product info
     results = []
-    for link in links:
+    for index, link in enumerate(links):
+        # count index
+        print(f"{index+1}/{len(links)}")
         if link in links_in_dataset:
-            print(f"{link} already exists")
+            # print(f"{link} already exists")
             continue
-        print(link)
-        product = get_product_info(link)
+        # print(link)
+        try:
+            product = get_product_info(link)
+        except Exception as e:
+            print(e)
+            print(f"{link} failed")
+            continue
         results.append(product)
 
     # write results to csv
