@@ -20,17 +20,9 @@ def save_image(image_url, name):
     response = requests.get(image_url)
     content_type = response.headers['content-type']
     extension = mimetypes.guess_extension(content_type)
-    with open(f"{name}{extension}", 'wb') as handle:
-        response = requests.get(image_url, stream=True)
-
-        if not response.ok:
-            print(response)
-
-        for block in response.iter_content(1024):
-            if not block:
-                break
-
-            handle.write(block)
+    img_data = response.content
+    with open(f"{name}{extension}", 'wb') as handler:
+        handler.write(img_data)
 
 
 def save_excel(data, path):
@@ -52,17 +44,18 @@ def get_product_info(url):
     berat = convert_to_float(rows[5].find('td').text)
     panjang = convert_to_float(rows[7].find('td').text)
     tinggi = convert_to_float(rows[8].find('td').text)
-    image_url = soup.find('img').get('src')
+    image_url = soup.find('product-zoomer').get('regular')
     if desc_head := soup.find('div', {'id': 'product_description'}):
         description = desc_head.next_sibling.next_sibling.text.strip()
     else:
         description = ""
+    kategori = soup.find('ul', class_='breadcrumb').text.strip().replace('\n\n', '/').replace('\n', ' ')
     
-    # save_image(image_url, f"./bormadago/images/{upc}")
+    save_image(image_url, f"./bormadago/images/{upc}")
     return {
         "name": soup.find('h1').text,
         "deskripsi": description,
-        "kategori": "",
+        "kategori": kategori,
         "upc": upc,
         "jenis_produk": rows[1].find('td').text,
         "harga": price,
@@ -72,7 +65,8 @@ def get_product_info(url):
         "manufacturer": rows[6].find('td').text,
         "panjang": panjang,
         "tinggi": tinggi,
-        "image": soup.find('img').get('src')
+        "image": image_url,
+        "link": url
     }
 
 
@@ -84,12 +78,12 @@ if __name__ == '__main__':
 
     # get product info
     results = []
-    for link in links[:10]:
+    for link in links:
+        print(link)
         product = get_product_info(link)
-        print(product)
         results.append(product)
 
     # write results to csv
-    save_excel(results, "./bormadago/bormadago.csv")
+    save_excel(results, "./bormadago/bormadago.xlsx")
     print('Done')
     exit(0)
