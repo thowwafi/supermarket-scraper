@@ -100,9 +100,16 @@ if __name__ == '__main__':
         data = json.load(fn)
     links = data['links']
 
+    # check if link already exists in dataset
+    df = pd.read_excel('./bormadago/bormadago.xlsx')
+    links_in_dataset = df['link'].tolist()
+
     # get product info
     results = []
     for link in links:
+        if link in links_in_dataset:
+            print(f"{link} already exists")
+            continue
         print(link)
         product = get_product_info(link)
         results.append(product)
