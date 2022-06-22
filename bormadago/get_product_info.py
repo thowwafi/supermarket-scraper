@@ -37,13 +37,37 @@ def get_product_info(url):
     res = requests.get(url)
     soup = bs4(res.content, 'html.parser')
     table = soup.find('table', class_='table table-striped')
-    rows = table.find_all('tr')
-    upc = rows[0].find('td').text
-    price = extract_price(rows[2].find('td').text)
-    lebar = convert_to_float(rows[4].find('td').text)
-    berat = convert_to_float(rows[5].find('td').text)
-    panjang = convert_to_float(rows[7].find('td').text)
-    tinggi = convert_to_float(rows[8].find('td').text)
+    th_upc = table.find('th', text=re.compile('upc', re.I))
+    upc = th_upc.find_next('td').text
+
+    th_jenis_produk = table.find('th', text=re.compile('jenis produk', re.I))
+    jenis_produk = th_jenis_produk.find_next('td').text
+
+    th_price = table.find('th', text=re.compile('harga', re.I))
+    price = th_price.find_next('td').text
+    price = extract_price(price)
+
+    th_ketersediaan = table.find('th', text=re.compile('ketersediaan', re.I))
+    ketersediaan = th_ketersediaan.find_next('td').text
+
+    th_lebar = table.find('th', text=re.compile('lebar', re.I))
+    lebar = th_lebar.find_next('td').text
+    lebar = convert_to_float(lebar)
+
+    th_berat = table.find('th', text=re.compile('berat', re.I))
+    berat = th_berat.find_next('td').text
+    berat = convert_to_float(berat)
+
+    th_manufacturer = table.find('th', text=re.compile('manufacturer', re.I))
+    manufacturer = th_manufacturer.find_next('td').text
+
+    th_panjang = table.find('th', text=re.compile('panjang', re.I))
+    panjang = th_panjang.find_next('td').text
+    panjang = convert_to_float(panjang)
+
+    th_tinggi = table.find('th', text=re.compile('tinggi', re.I))
+    tinggi = th_tinggi.find_next('td').text
+    tinggi = convert_to_float(tinggi)
     image_url = soup.find('product-zoomer').get('regular')
     if desc_head := soup.find('div', {'id': 'product_description'}):
         description = desc_head.next_sibling.next_sibling.text.strip()
@@ -57,12 +81,12 @@ def get_product_info(url):
         "deskripsi": description,
         "kategori": kategori,
         "upc": upc,
-        "jenis_produk": rows[1].find('td').text,
+        "jenis_produk": jenis_produk,
         "harga": price,
-        "ketersediaan": rows[3].find('td').text,
+        "ketersediaan": ketersediaan,
         "lebar": lebar,
         "berat": berat,
-        "manufacturer": rows[6].find('td').text,
+        "manufacturer": manufacturer,
         "panjang": panjang,
         "tinggi": tinggi,
         "image": image_url,
