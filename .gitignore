@@ -1,1 +1,6 @@
 /venv/
+*/images/
+*.json
+*.zip
+*.csv
+*.xlsx
